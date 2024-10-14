@@ -1,0 +1,29 @@
+# Large cocktail bar database
+# Classic cocktails and their ingredients
+
+vodka:Moscow Mule,Vodka Tonic,Bloody Mary,Cosmopolitan,White Russian,Black Russian,Espresso Martini,Vodka Martini
+gin:Gin & Tonic,Martini,Negroni,Gin Fizz,Tom Collins,Singapore Sling,Aviation,Bramble
+rum:Mojito,Piña Colada,Dark & Stormy,Daiquiri,Mai Tai,Hurricane,Rum Punch,Cuba Libre
+tequila:Margarita,Tequila Sunrise,Paloma,Mexican Mule,Ranch Water,Long Island Iced Tea
+whiskey:Old Fashioned,Manhattan,Whiskey Sour,Mint Julep,Irish Coffee,Sazerac
+brandy:Sidecar,Brandy Alexander,Metropolitan,Brandy Sour,B&B
+triple sec:Margarita,Cosmopolitan,Long Island Iced Tea,Sidecar,White Lady
+vermouth:Martini,Manhattan,Negroni,Bronx,Perfect Manhattan
+campari:Negroni,Boulevardier,Americano
+lime juice:Moscow Mule,Mojito,Margarita,Daiquiri,Gimlet,Cosmopolitan
+lemon juice:Whiskey Sour,Tom Collins,Sidecar,Aviation,Gin Fizz
+orange juice:Tequila Sunrise,Bronx,Sunrise Mimosa,Screwdriver
+cranberry juice:Cosmopolitan,Sea Breeze,Cape Codder
+ginger beer:Moscow Mule,Dark & Stormy,London Mule
+coca cola:Cuba Libre,Long Island Iced Tea
+tonic water:Gin & Tonic,Vodka Tonic
+soda water:Tom Collins,Gin Fizz,Mojito
+angostura bitters:Old Fashioned,Manhattan,Singapore Sling
+peach schnapps:Sex on the Beach,Fuzzy Navel
+coffee liqueur:White Russian,Black Russian,Espresso Martini
+cream:White Russian,Brandy Alexander,Irish Coffee
+mint:Mojito,Mint Julep,Southside
+sugar syrup:Mojito,Daiquiri,Old Fashioned,Whiskey Sour
+
+# Available ingredients for testing
+vodka,gin,rum,tequila,triple sec,lime juice,cranberry juice,ginger beer,mint,sugar syrup
