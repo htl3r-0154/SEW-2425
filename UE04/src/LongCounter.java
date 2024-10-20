@@ -1,5 +1,3 @@
-package sew2.exercises.uecollectionIII.resources;
-
 import java.util.*;
 
 
@@ -74,7 +72,7 @@ public class LongCounter<K> extends HashMap<K, Long> {
     };
 
 
-     /**
+    /**
      * Der keyComperator wird zum Sortieren für {@link #mostCommon(int)}} und
      * {@link #lessCommon(int)} vewendet.
      *
@@ -94,6 +92,7 @@ public class LongCounter<K> extends HashMap<K, Long> {
 
     /**
      * Erzeugt eine LongCounter aus einer beliebigen Map die Long-Values hat
+     *
      * @param m die Map mit den schon gezählten Werden
      */
     public LongCounter(Map<? extends K, Long> m) {
@@ -106,33 +105,23 @@ public class LongCounter<K> extends HashMap<K, Long> {
      *
      * @param k das Array mit den zu zählenden Elementen
      */
-    public LongCounter(K...k) {
-        // TODO Sourcecode ergänzen
+    public LongCounter(K... k) {
+        for (K key : k) {
+            put(key);
+        }
     }
-
-
-    /**
-     * Erzeugt einen LongCounter aus der Collection
-     *
-     * @param k das Array mit den zu zählenden Elementen
-     */
-    public LongCounter(Collection<K> k) {
-        // TODO Sourcecode ergänzen
-    }
-
 
     /**
      * Erzeugt einen LongCounter aus einem String und zählt alle Zeichen in dem String.
      *
      * @param s die zu zählenden Zeichen
-     *
      * @return der LongCounter, der alle Zeichen gezählt hat
      */
     public static LongCounter<Character> fromString(CharSequence s) {
         LongCounter<Character> counter = new LongCounter<>();
-
-        // TODO Sourcecode ergänzen
-
+        for (int i = 0; i < s.length(); i++) {
+            counter.merge(s.charAt(i), 1L, Long::sum);
+        }
         return counter;
     }
 
@@ -140,28 +129,23 @@ public class LongCounter<K> extends HashMap<K, Long> {
     /**
      * Erhöht den Counter um "value" für den Key.
      *
-     * @param key     der Key, dessen value verändert wird
-     * @param value   der Wert, um den der Counter verändert werden soll
-     *
+     * @param key   der Key, dessen value verändert wird
+     * @param value der Wert, um den der Counter verändert werden soll
      * @return der alte Wert des Counters oder null
      */
     public Long put(K key, long value) {
-       // TODO Sourcecode und return-Wert ergänzen
-
-        return 0L;
+        return this.merge(key, value, Long::sum);
     }
 
 
     /**
      * Erhöht den Counter um Eins für den Key.
      *
-     * @param key     der Key, dessen value verändert wird
-     *
+     * @param key der Key, dessen value verändert wird
      * @return der alte Wert des Counters oder null
      */
     public Long put(K key) {
-        // TODO Sourcecode und return-Wert ergänzen
-        return 0L;
+        return this.merge(key, 1L, Long::sum);
     }
 
 
@@ -171,17 +155,24 @@ public class LongCounter<K> extends HashMap<K, Long> {
      * @param m die Map mit den zu addierenden Werten
      */
     public void putAll(Map<? extends K, ? extends Long> m) {
-        // TODO Sourcecode ergänzen
+        for (Entry<? extends K, ? extends Long> entry : m.entrySet()) {
+            this.merge(entry.getKey(), entry.getValue(), Long::sum);
+        }
     }
 
-
+/*
+* for (Entry<? extends K, ? extends Long> entry : m.entrySet()) {*/
     /**
      * Vermindert (subtrahiert) die Werte aus der Map "m" zum LongCounter.
      *
      * @param m die Map mit den zu subtrahierenden Werten
      */
     public void subtractAll(Map<? extends K, ? extends Long> m) {
-        // TODO Sourcecode ergänzen
+        for (Map.Entry<? extends K, ? extends Long> entry : m.entrySet()) {
+            K key = entry.getKey();
+            Long value = entry.getValue();
+            this.merge(key, -value, Long::sum);
+        }
     }
 
 
@@ -216,7 +207,12 @@ public class LongCounter<K> extends HashMap<K, Long> {
      * Löscht alle Einträge aus der Map, deren Counter == 0 ist.
      */
     public void clearZeros() {
-        // TODO Sourcecode ergänzen
-        // Wichtig: man kann einer Schleife keine Elemente löschen -- verwende eine Schleife mit einem Iterator
+        Iterator<Entry<K, Long>> iterator = this.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<K, Long> entry = iterator.next();
+            if (entry.getValue() <= 0) {
+                iterator.remove();
+            }
+        }
     }
 }
