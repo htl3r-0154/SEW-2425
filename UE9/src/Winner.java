@@ -108,8 +108,8 @@ public class Winner {
 
     public static List<String> getYearAndWinner(List<Winner> tdfWinners) {
         return tdfWinners.stream()
-                .map(winner -> winner.getYear() + " - " + winner.getName())  // Kombiniert Jahr und Namen
-                .collect(Collectors.toList());  // Sammelt die Ergebnisse in einer Liste
+                .map(winner -> winner.getYear() + " - " + winner.getName())
+                .collect(Collectors.toList());
     }
 
     public static Optional<Integer> getFirstWinningYearByName(List<Winner> tdfWinnersX, String nibaxali8) {
