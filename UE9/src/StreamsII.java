@@ -183,7 +183,7 @@ public class StreamsII {
                     geburtstag = LocalDate.parse(parts[3], dateFormatter);
                 } catch (DateTimeParseException e) {
                     System.err.println("Invalid date format: " + parts[3] + " for student in class " + klasse);
-                    continue; // Skip this student and continue with the next
+                    continue;
                 }
                 String abteilung = parts[4];
 
