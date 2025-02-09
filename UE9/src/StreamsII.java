@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class StreamsII {
 
@@ -105,7 +108,18 @@ public class StreamsII {
         }
         morseCode.append("///");
         return morseCode.toString();
+    }public static String getMostCommonIp(String filePath) throws IOException {
+        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+            return lines.map(line -> line.split(" ")[0])
+                    .collect(Collectors.groupingBy(ip -> ip, Collectors.counting()))
+                    .entrySet()
+                    .stream()
+                    .max(Map.Entry.comparingByValue())
+                    .map(Map.Entry::getKey)
+                    .orElse(null);
+        }
     }
+
     public static String getMostCommonPage(String filePath) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
             return lines.map(line -> {
@@ -126,5 +140,85 @@ public class StreamsII {
                     .map(Map.Entry::getKey)
                     .orElse(null);
         }
+    }
+
+    public static long countDownloadBytes(String filePath) throws IOException {
+        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+            return lines.map(line -> line.split(" "))
+                    .filter(parts -> parts.length > 9)
+                    .mapToLong(parts -> {
+                        try {
+                            return Long.parseLong(parts[9]);
+                        } catch (NumberFormatException e) {
+                            return 0L;
+                        }
+                    })
+                    .sum();
+        }
+    }
+
+    public static void printStudentStatistics(String filename) {
+        Map<String, Integer> abteilungen = new HashMap<>();
+        Set<String> klassen = new HashSet<>();
+        Map<Integer, Integer> geburtsmonate = new HashMap<>();
+        Map<String, Map<LocalDate, Integer>> klassenGeburtstage = new HashMap<>();
+        int studentSum = 0;
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+                String[] parts = line.split(";");
+                if (parts.length < 5) continue;
+
+                String klasse = parts[2];
+                LocalDate geburtstag;
+                try {
+                    geburtstag = LocalDate.parse(parts[3], dateFormatter);
+                } catch (DateTimeParseException e) {
+                    System.err.println("Invalid date format: " + parts[3] + " for student in class " + klasse);
+                    continue; // Skip this student and continue with the next
+                }
+                String abteilung = parts[4];
+
+                abteilungen.put(abteilung, abteilungen.getOrDefault(abteilung, 0) + 1);
+
+                klassen.add(klasse);
+
+                int monat = geburtstag.getMonthValue();
+                geburtsmonate.put(monat, geburtsmonate.getOrDefault(monat, 0) + 1);
+
+                klassenGeburtstage.putIfAbsent(klasse, new HashMap<>());
+                Map<LocalDate, Integer> geburtstageInKlasse = klassenGeburtstage.get(klasse);
+                geburtstageInKlasse.put(geburtstag, geburtstageInKlasse.getOrDefault(geburtstag, 0) + 1);
+
+                studentSum++;
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Anzahl Schüler pro Abteilung:");
+        for (Map.Entry<String, Integer> entry : abteilungen.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+        System.out.println("\nAnzahl Klassen: " + klassen.size());
+        double durchschnittlicheKlassengröße = (double) studentSum / klassen.size();
+        System.out.printf("\nDurchschnittliche Klassengröße: %.2f%n", durchschnittlicheKlassengröße);
+        System.out.println("\nSchüler pro Geburtsmonat:");
+        for (int i = 1; i <= 12; i++) {
+            System.out.println("Monat " + i + ": " + geburtsmonate.getOrDefault(i, 0));
+        }
+        long klassenMitGleichenGeburtstagen = klassenGeburtstage.values().stream()
+                .filter(map -> map.values().stream().anyMatch(count -> count >= 2))
+                .count();
+        System.out.println("\nKlassen mit mind. 2 Schülern gleichen Geburtsdatums: " + klassenMitGleichenGeburtstagen);
     }
 }

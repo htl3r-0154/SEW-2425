@@ -95,13 +95,12 @@ public class StreamsIITest {
         long counter = StreamsII.countDownloadBytes("../resources/access.log");
         assertEquals(28336044127L, counter);
     }
-}
-/**
+
     @Test
     void printStudentStatistics0() throws IOException {
         final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStreamCaptor));
-        StreamsII.printStudentStatistics("resources/Schuelerliste_UTF-8.csv");
+        StreamsII.printStudentStatistics("../resources/Schuelerliste_UTF-8.csv");
         String output = outputStreamCaptor.toString().trim();
         assertTrue(output.contains("Anzahl Schüler pro Abteilung:"));
         assertTrue(output.contains("IT: 669"));
@@ -121,4 +120,4 @@ public class StreamsIITest {
         assertTrue(output.contains("Klassen mit mind. 2 Schülern gleichen Geburtsdatums: 17"));
     }
 }
-*/
+
