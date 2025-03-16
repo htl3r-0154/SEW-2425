@@ -1,25 +1,36 @@
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+class Main {
+    static int autoIdCounter = 1;
 
-public static void main(String[] args) throws InterruptedException {
-    ExecutorService executor = Executors.newFixedThreadPool(2);
-
-    Runnable task = () -> {
+    public static void main(String[] args) {
         TollboothSimulation simulation = new TollboothSimulation(3);
-        for (int i = 0; i < TollboothSimulation.tollboothCount; i++) {
-            int threadId = i;
-            Thread thread = new Thread(() -> {
-                for (int j = 0; j < 200000; j++) {
-                    System.out.print("Tollbooth " + threadId);
-                }
-                System.out.println(" ");
-            });
-            thread.start();
+        long startTime = System.currentTimeMillis();
+        Thread monitorThread = new Thread(new TollboothMonitor());
+        monitorThread.start();
+
+        while (System.currentTimeMillis() - startTime < TollboothSimulation.runtime) {
+            if (!TollboothSimulation.running) break;
+
+            int autoId;
+            synchronized (Main.class) {
+                autoId = autoIdCounter++;
+            }
+
+            int tollboothId = autoId % TollboothSimulation.tollboothCount;
+            Auto auto = new Auto(autoId, tollboothId);
+            try {
+                TollboothSimulation.tollboothQueues.get(tollboothId).put(auto);
+                Thread.sleep((int) (Math.random() * 1000));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
-    };
 
-    executor.submit(task);
-
-    Thread.sleep(3000); // Let threads run for 3 seconds
-    executor.shutdownNow(); // Stop all threads
+        simulation.stopSimulation();
+        try {
+            monitorThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        System.out.println("Simulation beendet.");
+    }
 }
